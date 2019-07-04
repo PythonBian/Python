@@ -3,9 +3,55 @@
 		<title>
 			image
 		</title>
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/Chart.min.js"></script>
 	</head>
 	<body>
-		<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562231356365&di=0d1ca146f287f56b35b9c271e0cc08ac&imgtype=0&src=http%3A%2F%2Fwww.zhongaigou.com%2Fuploadfiles%2F33191%2F9133%2520%2528295%2529.jpg">
-	</body>
+		<canvas id="panel" height="330px" width="500px">
 
+		</canvas>
+		<script>
+			$(
+				function () {
+					var can = $("#panel").get(0).getContext("2d");//设置为2d画布
+					var canData = {
+						labels:["a","b","c","d","e","f"], //x轴的坐标
+						datasets:[
+							{
+								fillColor: "rgba(255,255,0,0.2)", //线条下的填充色
+								strokeColor: "rgba(0,255,0,1)", //线条颜色
+								data:[1,2,3,2,1,5] //y轴对应x轴的数据
+							}
+						]
+					};
+					var line = new Chart(can).Line(canData);
+					setInterval(
+						function () {
+							$.ajax(
+								{
+									type:"get", //ajax请求的类型
+									url:"/cgi-bin/jsonData.py", //ajax请求的地址
+									data:"", //请求需要携带的数据
+									success: function (data) {
+										line.addData(
+												[data["num"]],
+												data["now"]
+										);
+										var len = line.datasets[0].points.length; //获取点个数
+										if(len > 8){
+											line.removeData()
+										}
+									},//回调函数，如果请求成功，ajax自动调用当前函数，将返回结果传递给data
+									error: function (error) {
+										console.log(error)
+									}//回调函数，如果请求失败，ajax自动调用当前函数，将返回错误传递给error
+								}
+							)//使用ajax
+						},1000
+					)
+
+				}
+			)
+		</script>
+	</body>
 </html>
