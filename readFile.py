@@ -1,6 +1,6 @@
-# from time import sleep
-# from selenium import webdriver
-#
+# import time
+# import selenium
+
 # def getFile(url):
 #     #实例化一个浏览器驱动
 #     chrome = webdriver.Chrome()
